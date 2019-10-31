@@ -1,4 +1,4 @@
 language: java
 jdk: openjdk8
 before_install:
-- openssl aes-256-cbc -K $encrypted_0f725f212537_key -iv $encrypted_0f725f212537_iv -in src/main/resources/application.properties.enc -out src/main/resources/application.properties -d
+- openssl aes-256-cbc -K $encrypted_5ea17eb9e681_key -iv $encrypted_5ea17eb9e681_iv -in application.properties.enc -out src/main/resources/application.properties -d
