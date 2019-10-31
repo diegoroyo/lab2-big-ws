@@ -24,7 +24,7 @@ task genJaxb {
                     classpath: configurations.jaxb.asPath
             mkdir(dir: sourcesDir)
 
-            xjc(destdir: sourcesDir, schema: schema, encoding: 'UTF-8') {
+            xjc(destdir: sourcesDir, schema: schema, encoding: 'UTF-8', fork: true) {
                 arg(value: "-wsdl")
                 produces(dir: sourcesDir, includes: "**/*.java")
             }
