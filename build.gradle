@@ -57,6 +57,9 @@ dependencies {
     compile "org.apache.httpcomponents:httpclient"
     compile "wsdl4j:wsdl4j:1.6.3"
 
+    compile group: 'org.springframework.ws', name: 'spring-ws-security', version: '3.0.8.RELEASE'
+
+
     runtime "com.sun.xml.bind:jaxb-core:2.3.0"
     runtime "com.sun.xml.bind:jaxb-impl:2.3.0"
     runtime "javax.xml.bind:jaxb-api:2.3.0"

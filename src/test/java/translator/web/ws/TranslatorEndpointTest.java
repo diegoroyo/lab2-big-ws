@@ -10,6 +10,9 @@ import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.ClassUtils;
 import org.springframework.ws.client.core.WebServiceTemplate;
+import org.springframework.ws.soap.security.wss4j2.Wss4jSecurityInterceptor;
+import org.springframework.ws.client.support.interceptor.ClientInterceptor;
+import org.springframework.beans.factory.annotation.Value;
 
 import translator.Application;
 import translator.web.ws.schema.GetTranslationRequest;
@@ -30,6 +33,20 @@ public class TranslatorEndpointTest {
   @LocalServerPort
   private int port;
 
+  @Value("${wss4j.user}")
+  private String user;
+
+  @Value("${wss4j.password}")
+  private String password;
+
+  public Wss4jSecurityInterceptor securityInterceptor(){
+      Wss4jSecurityInterceptor wss4jSecurityInterceptor = new Wss4jSecurityInterceptor();
+      wss4jSecurityInterceptor.setSecurementActions("Timestamp UsernameToken");
+      wss4jSecurityInterceptor.setSecurementUsername(user);
+      wss4jSecurityInterceptor.setSecurementPassword(password);
+      return wss4jSecurityInterceptor;
+  }
+
   @Before
   public void init() throws Exception {
     marshaller.setPackagesToScan(ClassUtils.getPackageName(GetTranslationRequest.class));
@@ -42,7 +59,10 @@ public class TranslatorEndpointTest {
     request.setLangFrom("en");
     request.setLangTo("es");
     request.setText("This is a test of translation service");
-    Object response = new WebServiceTemplate(marshaller).marshalSendAndReceive("http://localhost:"
+    ClientInterceptor[] interceptors = new ClientInterceptor[] {securityInterceptor()};
+    WebServiceTemplate template = new WebServiceTemplate(marshaller);
+    template.setInterceptors(interceptors);
+    Object response = template.marshalSendAndReceive("http://localhost:"
             + port + "/ws", request);
     assertNotNull(response);
     assertThat(response, instanceOf(GetTranslationResponse.class));
